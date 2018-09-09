@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<style>
+    html {
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+</style>
+<title></title>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.common-material.min.css" />  <!--Material Theme CSS file Reference-->
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.material.min.css" />  <!--Material Theme CSS file reference-->
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.material.mobile.min.css" />  <!--Material Theme CSS file reference for mobile view--> 
+
+<script src="https://kendo.cdn.telerik.com/2018.2.620/js/jquery.min.js"></script>  <!--JQuery reference file--> 
+<script src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script> <!--Kendo JS file build on top of jQuery Order should be next to jQuery reference-->  
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Registration Form</title>
+</head>
+
+
+<body>
+    <div id="example">
+        
+        <div class="demo-section k-content wide">
+            <div>
+                <form>
+                    <ul id="fieldlist">
+                        <li><label for="fname">First Name:</label> <input id="fname" data-bind="value: firstName" class="k-textbox" /></li>\
+                        <!--data-bind attribute is used for two way binding between the view and model--> 
+                        <!--Wheneve you change the value in view if will update the value in model and viceVersa, this viewMode can be implement using kendo.observable  -->
+                        <li><label for="lname">Last Name:</label> <input id="lname" data-bind="value: lastName" class="k-textbox" /></li>
+                        <li><label for="gender">Gender:</label> <select id="gender" data-bind="source: genders, value: gender"></select></li>
+                        <li> <label for="agree">License Agreement</label> <input type="checkbox" id="agree" data-bind="checked: agreed" /> I have read the licence agreement</li>
+                    </ul>
+                    <button data-bind="enabled: agreed, click: register" class="k-button k-primary">Register</button>
+                    <!--data-bind will have many values you can get it from kendo Document -->
+                </form>
+            </div>
+      
+        </div>
+        <script>
+            $(document).ready(function () {
+                var viewModel = kendo.observable({
+                    firstName: "John",
+                    lastName: "Doe",
+                    genders: ["Male", "Female"],
+                    gender: "Male",
+                    agreed: false,
+                    confirmed: false,
+                    register: function (e) {
+                        e.preventDefault();
+                        this.set("confirmed", true);
+                       
+                        var currentViewModel = { FirstName: viewModel.firstName, LastName: viewModel.lastName };
+                        // instead of ajax() you can use kendo trandport 
+                        $.ajax({
+                            url: "api/Registration/SaveEmployee",
+                            type: 'POST',
+                            data: currentViewModel
+                        })
+                    },
+                   
+                });
+
+                kendo.bind($("#example"), viewModel); // This statement is must to bind the view model for the mode 
+            });
+        </script>
+
+      
+        <style>
+            .demo-section > div {
+                float: left;
+                margin-bottom: 2em;
+            }
+
+            #fieldlist {
+                margin: 0;
+                padding: 0;
+            }
+
+                #fieldlist li {
+                    list-style: none;
+                    padding-bottom: 1.5em;
+                    text-align: left;
+                }
+
+                #fieldlist label {
+                    display: block;
+                    padding-bottom: .3em;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                }
+
+            .prettyprint {
+                background-color: #fff;
+                border: 1px solid #ccc;
+                overflow: auto;
+                padding: 5px;
+            }
+        </style>
+    </div>
+
+</body>
+</html>
